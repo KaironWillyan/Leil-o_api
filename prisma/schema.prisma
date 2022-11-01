@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+//usuario
+model User {
+  id String @id @default(uuid())
+  email String  @unique
+  name String
+  birth_date DateTime
+  address String
+  telephone_number String
+  carteira  Wallet[]
+  @@map("User")
+}
+//carteira
+model Wallet {
+  id  String @id @unique
+  wallet_number String @unique
+  balance Float
+  user User?  @relation(fields: [userId], references: [id])
+  userId  String?
+  @@map("Wallet")
+}
+//leilão
+model Auction {
+  id  String @id @default(uuid()) @unique
+  start_date  DateTime
+  start_time  DateTime
+  end_time  DateTime
+  list_itens  Batch[]
+  @@map("Auction")
+}
+//lance
+model Throw {
+  id  String @id @unique() @default(uuid())
+  throw_value Float
+  throw_time  DateTime
+  @@map("Throw")
+}
+//lote
+model Batch {
+  id String  @id @default(uuid()) @unique
+  title String
+  description String
+  minimum_bid Float
+  claimed_batch Boolean
+  price_claimed Float
+  auction Auction?  @relation(fields: [auction_id], references: [id])
+  auction_id  String?
+  @@map("Batch")
+}
+//curador
+model curator {
+  id  String  @id @default(uuid())  @unique
+  name  String
+  email String
+  password  String
+  address String
+  telephone_number String
+  @@map("Curator")
+}
